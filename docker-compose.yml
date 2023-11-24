@@ -7,5 +7,59 @@ services:
     volumes:
       - ./service:/service
 
+    environment:
+      DB_HOST: database
+      DB_NAME: db_name
+      DB_USER: db_user
+      DB_PASS: pass
+
     command: >
-      sh -c 'python manage.py runserver 0.0.0.0:8000'
+      sh -c 'sleep 10 && python manage.py runserver 0.0.0.0:8000'
+    depends_on:
+      - database
+
+  database:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: db_name
+      MYSQL_USER: db_user
+      MYSQL_PASSWORD: pass
+      MYSQL_ROOT_PASSWORD: root_pass
+
+    ports:
+      - "3306:3306"
+    volumes:
+        - ./mysql-data:/var/lib/mysql
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+
+  redis:
+    image: redis:7.0.5-alpine
+    hostname: redis
+
+  worker:
+    build:
+      context: .
+    hostname: worker
+    entrypoint: celery
+    command: -A celery_app.app worker --loglevel=info
+    volumes:
+      - ./service:/service
+    links:
+      - redis
+    depends_on:
+      - redis
+      - database
+    environment:
+      - DB_HOST=database
+      - DB_NAME=dbname
+      - DB_USER=dbuser
+      - DB_PASS=pass
+
+
+

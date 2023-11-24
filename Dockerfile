@@ -5,6 +5,7 @@ COPY service /service
 WORKDIR /service
 EXPOSE 8000
 
+RUN apk add mysql-client build-base mysql-dev
 RUN pip install -r /temp/requirements.txt
 RUN adduser --disabled-password service-user
 
