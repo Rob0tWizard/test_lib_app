@@ -14,7 +14,7 @@ services:
       DB_PASS: pass
 
     command: >
-      sh -c 'sleep 10 && python manage.py runserver 0.0.0.0:8000'
+      sh -c 'sleep 10 && python manage.py migrate && python manage.py runserver 0.0.0.0:8000'
     depends_on:
       - database
 
@@ -47,7 +47,7 @@ services:
       context: .
     hostname: worker
     entrypoint: celery
-    command: -A celery_app.app worker --loglevel=info
+    command: -A test_lib_app.celery_app worker --loglevel=info
     volumes:
       - ./service:/service
     links:
@@ -60,6 +60,7 @@ services:
       - DB_NAME=db_name
       - DB_USER=db_user
       - DB_PASS=pass
+      - DB_ROOT_PASS=root_pass
 
 
 

@@ -1,5 +1,5 @@
 Django
 djangorestframework
 mysqlclient
-celery[redis]==5.2.7
-django-redis==5.2.0
+celery[redis]
+django-redis
