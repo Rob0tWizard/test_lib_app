@@ -47,7 +47,7 @@ services:
       context: .
     hostname: worker
     entrypoint: celery
-    command: -A test_lib_app.celery_app worker --loglevel=info
+    command: -A service.celery_app.app worker --loglevel=info
     volumes:
       - ./service:/service
     links:
